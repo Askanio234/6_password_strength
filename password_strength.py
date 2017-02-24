@@ -1,4 +1,5 @@
 import sys
+import getpass
 
 
 common_words = "hello, world, guest, password, user"
@@ -57,7 +58,7 @@ def get_password_strength(password):
 
 
 if __name__ == '__main__':
-    password = input("Введите пароль для проверки: ")
+    password = getpass.getpass(prompt="Введите пароль для проверки: ")
     if password:
         print("Защищенность вашего пароля - {}".format(
             get_password_strength(password)
