@@ -2,59 +2,57 @@ import sys
 import getpass
 
 
-common_words = "hello, world, guest, password, user"
+UNACEPTABLE_PASSWORDS = {
+                        "password1", "welcome1", "p@ssword", "summer1!",
+                        "fa$hion1", "hello123", "welcome123", "123456q@",
+                        "p@ssword1", "hello", "world", "guest", "password",
+                        "user"
+                        }
 
-common_passwords = ("password1, welcome1, p@ssword, summer1!, fa$hion1, "
-                    "hello123, welcome123, 123456q@, p@ssword1")
 
-unaceptable_passwords = common_words + " " + common_passwords
+MIN_STENGTH = 1
+
+MAX_STRENGTH = 10
 
 
-def analyze_password_length(password):
+def is_password_long(password):
     result = 0
     if len(password) > 8:
-        return 3
-    elif 4 < len(password) <= 8:
-        return 2
+        return True
     else:
-        return 1
+        return False
 
 
-def analyze_presense_of_digits(password):
-    if any([character.isdigit() for character in password]):
-        return 2
-    else:
-        return 0
+def is_digits_in_password(password):
+    return any([character.isdigit() for character in password])
 
 
-def analyze_presense_of_mixed_case(password):
-    if any(
+def is_mixed_case_in_password(password):
+    return any(
         [character.isupper() for character in password]
         ) and any(
         [character.islower() for character in password]
-        ):
-        return 2
-    else:
-        return 0
+        )
 
 
-def analyze_presense_of_special_symbols(password):
-    if any([not character.isalnum() for character in password]):
-        return 2
-    else:
-        return 0
+def is_special_symbols_in_password(password):
+    return any([not character.isalnum() for character in password])
 
 
 def get_password_strength(password):
-    result = 1
-    if not password.lower() in unaceptable_passwords:
-        result += (analyze_password_length(password)
-                    + analyze_presense_of_digits(password)
-                    + analyze_presense_of_mixed_case(password)
-                    + analyze_presense_of_special_symbols(password))
-        return result
+    criterion = {
+                is_password_long, is_digits_in_password,
+                is_special_symbols_in_password, is_mixed_case_in_password
+                }
+
+    points_per_criteria = (MAX_STRENGTH - MIN_STENGTH)/len(criterion)
+
+    if not password.lower() in UNACEPTABLE_PASSWORDS:
+        return MIN_STENGTH + int(sum(
+            [points_per_criteria if criteria(password) else 0 for criteria in criterion]
+            ))
     else:
-        return result
+        return MIN_STENGTH
 
 
 if __name__ == '__main__':
