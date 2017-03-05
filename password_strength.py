@@ -1,26 +1,17 @@
 import sys
 import getpass
-
-
-UNACEPTABLE_PASSWORDS = {
-                        "password1", "welcome1", "p@ssword", "summer1!",
-                        "fa$hion1", "hello123", "welcome123", "123456q@",
-                        "p@ssword1", "hello", "world", "guest", "password",
-                        "user"
-                        }
+from blacklist import unaceptable_passwords
 
 
 MIN_STENGTH = 1
 
 MAX_STRENGTH = 10
 
+ACCEPTABLE_PASSWORD_LENGTH = 8
+
 
 def is_password_long(password):
-    result = 0
-    if len(password) > 8:
-        return True
-    else:
-        return False
+    return bool(len(password) > ACCEPTABLE_PASSWORD_LENGTH)
 
 
 def is_digits_in_password(password):
@@ -47,7 +38,7 @@ def get_password_strength(password):
 
     points_per_criteria = (MAX_STRENGTH - MIN_STENGTH)/len(criterion)
 
-    if not password.lower() in UNACEPTABLE_PASSWORDS:
+    if not password.lower() in unaceptable_passwords:
         return MIN_STENGTH + int(sum(
             [points_per_criteria if criteria(password) else 0 for criteria in criterion]
             ))
